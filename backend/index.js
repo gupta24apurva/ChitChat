@@ -82,8 +82,11 @@ app.post('/login', async (req, res) => {
                 const token = jwt.sign({ userId: user._id, username }, jwtkey);
                 return res.cookie('token', token, { sameSite: 'none', secure: 'true' }).status(201).json({ token, username, userId: user._id })
             }
+            else{
+                res.json("Incorrect password");
+            }
         }
-        return res.status(401).json({ message: 'Invalid username or password' });
+        return res.status(401).json({ message: 'User not found' });
     }
     catch (err) {
         console.log(err);

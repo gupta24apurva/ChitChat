@@ -5,7 +5,7 @@ import { UserContextProvider } from "./UserContext";
 
 function App() {
 
-  axios.defaults.baseURL='http://localhost:8000';
+  axios.defaults.baseURL='https://chitchat-ei78.onrender.com';
   axios.defaults.withCredentials=true;
 
   return (
