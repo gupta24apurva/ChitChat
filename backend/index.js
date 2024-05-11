@@ -14,6 +14,8 @@ const Message = require('./models/Message');
 mongoose.connect(process.env.MONGO_URL);
 jwtkey = process.env.JWT_SECRET;
 
+const port= process.env.PORT || 4000;
+
 const app = express();
 app.use('/uploads',express.static(__dirname+'/uploads'));
 app.use(express.json());
@@ -114,8 +116,8 @@ app.get('/messages/:userId', verifyToken, async (req, res) => {
     res.json(messages);
 })
 
-const server = app.listen(4000, () => {
-    console.log("Server is listening on port 4000")
+const server = app.listen(port, () => {
+    console.log("Server is listening on port: ",port)
 });
 
 const wss = new ws.WebSocketServer({ server });
