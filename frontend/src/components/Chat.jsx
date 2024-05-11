@@ -123,7 +123,7 @@ const Chat = ({ myUserId }) => {
     }
 
     function connectToWs() {
-        const ws = new WebSocket('ws://localhost:8000');
+        const ws = new WebSocket('https://chitchat-ei78.onrender.com');
         setWs(ws);
         ws.addEventListener('message', handleIncomingMessage);
 
