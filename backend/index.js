@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const ws = require('ws');
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcryptjs")
 const fs=require('fs');
 const cors = require('cors')
 require('dotenv').config();
