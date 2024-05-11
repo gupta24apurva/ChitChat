@@ -83,7 +83,7 @@ app.post('/login', async (req, res) => {
                 return res.cookie('token', token, { sameSite: 'none', secure: 'true' }).status(201).json({ token, username, userId: user._id })
             }
             else{
-                res.json("Incorrect password");
+                res.status(401).json("Incorrect password");
             }
         }
         return res.status(401).json({ message: 'User not found' });
