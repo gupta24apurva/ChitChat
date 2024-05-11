@@ -14,7 +14,7 @@ const Message = require('./models/Message');
 mongoose.connect(process.env.MONGO_URL);
 jwtkey = process.env.JWT_SECRET;
 
-const port= process.env.PORT || 4000;
+const port= process.env.PORT || 8000;
 
 const app = express();
 app.use('/uploads',express.static(__dirname+'/uploads'));
