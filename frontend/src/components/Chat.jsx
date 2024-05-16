@@ -68,8 +68,13 @@ const Chat = ({ myUserId }) => {
         else if ('text' in messageData || 'file' in messageData) {
             // console.log("Selected user id: ",selectedUserId);
             // console.log("Message sender: ",messageData.sender);
-            if (messageData.sender == selectedUserIdRef.current) {
-                console.log("Message Received: ",messageData);
+            if(messageData.sender == myUserId)
+            {
+                setMessages(prev => ([...prev, { ...messageData }]));
+                setNewMessageReceived(false);
+                scrollToBottom();
+            }
+            else if (messageData.sender == selectedUserIdRef.current) {
                 setMessages(prev => ([...prev, { ...messageData }]));
                 const isScrolledUp = messageContainerRef.current.scrollTop < (messageContainerRef.current.scrollHeight - messageContainerRef.current.clientHeight);
                 if (isScrolledUp) {
@@ -96,21 +101,18 @@ const Chat = ({ myUserId }) => {
             file
         }));
 
-        setNewMessageReceived(false);
-
-        if (file) {
-            await axios.get('/messages/' + selectedUserId).then(res => {
-                console.log("Response: ",res.data);
-                // const newMessage = res.data[res.data.length - 1];
-                setMessages(res.data);
-                console.log("State updated")
-            });
-        } else {
-            setMessages(prev => ([...prev, { text: newMessageText, sender: myUserId, recipient: selectedUserId, _id: Date.now(), file: '' }]));
-        }
+        // if (file) {
+        //     await axios.get('/messages/' + selectedUserId).then(res => {
+        //         console.log("Response: ",res.data);
+        //         // const newMessage = res.data[res.data.length - 1];
+        //         setMessages(res.data);
+        //         console.log("State updated")
+        //     });
+        // } else {
+        //     setMessages(prev => ([...prev, { text: newMessageText, sender: myUserId, recipient: selectedUserId, _id: Date.now(), file: '' }]));
+        // }
         setNewMessageText('');
 
-        scrollToBottom();
     }
 
     function sendFile(e) {
