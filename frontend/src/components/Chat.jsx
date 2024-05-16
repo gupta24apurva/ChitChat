@@ -101,7 +101,8 @@ const Chat = ({ myUserId }) => {
         if (file) {
             await axios.get('/messages/' + selectedUserId).then(res => {
                 console.log("Response: ",res.data);
-                setMessages(res.data);
+                const newMessage = res.data[res.data.length - 1];
+                setMessages(prevMessages => [...prevMessages, newMessage]);
                 console.log("State updated")
             });
         } else {
@@ -113,14 +114,19 @@ const Chat = ({ myUserId }) => {
     }
 
     function sendFile(e) {
+        const file = e.target.files[0];
+
+        if (!file) return;
+    
         const reader = new FileReader();
-        reader.readAsDataURL(e.target.files[0]);
+        reader.readAsDataURL(file);
         reader.onload = () => {
-            sendMessage(null, {
-                name: e.target.files[0].name,
+            const fileData = {
+                name: file.name,
                 data: reader.result
-            })
-        }
+            };
+            sendMessage(null, fileData);
+        };
     }
 
     function connectToWs() {
