@@ -127,6 +127,7 @@ const Chat = ({ myUserId }) => {
             };
             sendMessage(null, fileData);
         };
+        e.target.value = null;
     }
 
     function connectToWs() {
