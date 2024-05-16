@@ -34,6 +34,7 @@ const Chat = ({ myUserId }) => {
             ws.close();
         }
         axios.post('/logout').then(() => {
+            localStorage.removeItem('token');
             setUserId(null)
             setUsername(null)
         })
