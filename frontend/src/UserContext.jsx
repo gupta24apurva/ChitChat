@@ -9,9 +9,10 @@ export function UserContextProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, "$1");
+        const token = localStorage.getItem('token');
+    
         if (token) {
-            axios.get('/profile')
+            axios.get('/profile', { headers: { 'Authorization': `Bearer ${token}` }})
                 .then((res) => {
                     console.log("Logged in!")
                     console.log("Profile: ", res.data);
@@ -27,7 +28,7 @@ export function UserContextProvider({ children }) {
         else{
             setLoading(false);
         }
-    }, [username])
+    }, [])
 
     return (
         <UserContext.Provider value={{ username, setUsername, userId, setUserId }}>

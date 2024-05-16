@@ -27,7 +27,15 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 const verifyToken = (req, res, next) => {
-    const token = req.cookies?.token;
+    let token = req.cookies?.token;
+
+    if (!token) {
+        const authHeader = req.headers['Authorization'];
+        if (authHeader) {
+            token = authHeader.split(' ')[1];
+        }
+    }
+
     if (token) {
         jwt.verify(token, jwtkey, (err, userData) => {
             if (err) {
@@ -63,7 +71,7 @@ app.post('/register', async (req, res) => {
 
         const token = jwt.sign({ username, userId: createUser._id }, jwtkey);
 
-        res.cookie('token', token).status(201).json({ token, username, userId: createUser._id })
+        res.cookie('token', token, { sameSite: 'None', secure: 'true', httpOnly: true }).status(201).json({ token, username, userId: createUser._id })
     }
     catch (err) {
         console.log(err);
@@ -80,7 +88,7 @@ app.post('/login', async (req, res) => {
         if (user) {
             if (await bcrypt.compare(password, user.password)) {
                 const token = jwt.sign({ userId: user._id, username }, jwtkey);
-                return res.cookie('token', token, { sameSite: 'none', secure: 'true' }).status(201).json({ token, username, userId: user._id })
+                return res.cookie('token', token, { sameSite: 'None', secure: 'true', httpOnly: true }).status(201).json({ token, username, userId: user._id })
             }
             else{
                 res.status(401).json("Incorrect password");

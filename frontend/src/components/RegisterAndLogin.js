@@ -17,6 +17,7 @@ const RegisterAndLogin = () => {
         const { data } = res;
         console.log(isLoginOrRegister);
         console.log(data)
+        localStorage.setItem('token', data.token);
         setLoggedInUsername(username);
         setUserId(data.userId);
       })
