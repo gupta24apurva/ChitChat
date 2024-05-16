@@ -101,8 +101,8 @@ const Chat = ({ myUserId }) => {
         if (file) {
             await axios.get('/messages/' + selectedUserId).then(res => {
                 console.log("Response: ",res.data);
-                const newMessage = res.data[res.data.length - 1];
-                setMessages(prevMessages => [...prevMessages, newMessage]);
+                // const newMessage = res.data[res.data.length - 1];
+                setMessages(res.data);
                 console.log("State updated")
             });
         } else {
