@@ -94,7 +94,7 @@ app.post('/login', async (req, res) => {
                 res.status(401).json({message: "Incorrect password"});
             }
         }
-        return res.status(401).json({ message: 'Username not found' });
+        return res.status(401).json({ message: 'Username does not exist' });
     }
     catch (err) {
         console.log(err);
