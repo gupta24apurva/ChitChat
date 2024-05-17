@@ -61,7 +61,7 @@ app.post('/register', async (req, res) => {
     try {
         const { username, password } = req.body;
         if (!username || !password)
-            return res.status(400).json({ error: "All fields are required" });
+            return res.status(400).json({ message: "Username and Password are required" });
         const existingUser = await User.findOne({ username });
         if (existingUser) {
             return res.status(400).json({ message: 'Username already exists' });
@@ -82,7 +82,7 @@ app.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
         if (!username || !password)
-            return res.status(400).json({ error: "Username and password are required" });
+            return res.status(400).json({ message: "Username and password are required" });
 
         const user = await User.findOne({ username });
         if (user) {
@@ -91,10 +91,10 @@ app.post('/login', async (req, res) => {
                 return res.cookie('token', token, { sameSite: 'None', secure: 'true', httpOnly: true }).status(201).json({ token, username, userId: user._id })
             }
             else{
-                res.status(401).json("Incorrect password");
+                res.status(401).json({message: "Incorrect password"});
             }
         }
-        return res.status(401).json({ message: 'User not found' });
+        return res.status(401).json({ message: 'Username not found' });
     }
     catch (err) {
         console.log(err);

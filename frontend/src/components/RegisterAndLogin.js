@@ -1,6 +1,8 @@
 import React, { useContext, useState } from 'react'
 import axios from 'axios'
 import { UserContext } from '../UserContext';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const RegisterAndLogin = () => {
   const [username, setUsername] = useState('');
@@ -22,7 +24,7 @@ const RegisterAndLogin = () => {
         setUserId(data.userId);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err.response.data.message);
       })
   }
 
@@ -61,6 +63,7 @@ const RegisterAndLogin = () => {
           </div>
         )}
       </form>
+      <ToastContainer/>
     </div>
   )
 }
