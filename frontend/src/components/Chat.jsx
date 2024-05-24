@@ -297,15 +297,6 @@ const Chat = ({ myUserId }) => {
                                     </div>
                                 ))}
                             </div>
-                            {typingUsers.includes(selectedUserId) && (
-                                <div className='flex justify-start'>
-                                    <div className='max-w-lg inline-block p-1 mx-3 my-2 rounded-md text-md break-all bg-white text-black'>
-                                        <div>
-                                            Typing...
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     )}
                 </div>
