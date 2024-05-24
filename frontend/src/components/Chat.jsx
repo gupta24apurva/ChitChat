@@ -46,6 +46,8 @@ const Chat = ({ myUserId }) => {
 
     const handleTyping = () => {
         // Send typing event if not already typing
+        console.log("Typing");
+        
         if (ws && selectedUserId) {
             ws.send(JSON.stringify({
                 sender: myUserId,
