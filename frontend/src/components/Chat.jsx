@@ -261,9 +261,12 @@ const Chat = ({ myUserId }) => {
                     <div className='fixed top-0 w-full z-10 bg-white border-b border-gray-200 py-2 pl-4 flex items-center'>
                         <div>
                             <span>{onlinePeople[selectedUserId] || offlinePeople[selectedUserId]}</span>
+                        </div>
+                        <div className='text-sm ml-4'>
                             {onlinePeople[selectedUserId] ?
                                 (typingUsers.includes(selectedUserId) ?
-                                    <span>Typing...</span> : <span className="text-green-500">Online</span>) : <span className="text-red-500">Offline</span>}
+                                    <span>Typing...</span> : <span className="text-green-500">Online</span>) : <span className="text-red-500">Offline</span>
+                            }
                         </div>
                     </div>
                 )}
