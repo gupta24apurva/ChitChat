@@ -27,7 +27,6 @@ const Chat = ({ myUserId }) => {
     function selectUser(userId) {
         selectedUserIdRef.current = userId;
         setSelectedUserId(userId);
-        console.log("Selected user Id: ", selectedUserIdRef.current);
     }
 
     function logout() {
@@ -93,7 +92,6 @@ const Chat = ({ myUserId }) => {
 
     function handleIncomingMessage(e) {
         const messageData = JSON.parse(e.data);
-        console.log("Selected user id: ", selectedUserIdRef.current);
 
         if ('online' in messageData) {
             showOnlinePeople(messageData.online);
