@@ -70,7 +70,7 @@ const Chat = ({ myUserId }) => {
                 }));
                 // setIsTyping(false);
             }
-        }, 2000); // 2 seconds after user stops typing
+        }, 4000); // 4 seconds after user stops typing
     };
 
     const messageContainerRef = useRef(null)
@@ -282,9 +282,11 @@ const Chat = ({ myUserId }) => {
                                                     </a>
                                                 </div>
                                             )}
-                                            {typingUsers.includes(selectedUserId) && (
+                                            {/* {typingUsers.includes(selectedUserId) && (
                                                 <div>Typing...</div>
-                                            )}
+                                            )} */}
+                                            {console.log("Selected UserId: ",selectedUserId)}
+                                            {console.log("Typing users: ",typingUsers)}
                                         </div>
                                     </div>
                                 ))}
