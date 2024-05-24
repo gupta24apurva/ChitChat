@@ -185,8 +185,16 @@ wss.on('connection', (connection, req) => {
 
     connection.on('message', async (message) => {
         const messageData = JSON.parse(message.toString());
-        const { sender, recipient, text, file } = messageData;
+        const { sender, recipient, text, file, typing } = messageData;
+        
+        if (typing !== undefined) {
+            [...wss.clients]
+              .filter(c => c.userId == recipient)
+              .forEach(c => c.send(JSON.stringify({ typing, sender })));
+        }
+
         let filename=null;
+
         if(file)
         {
             const parts=file.name.split('.');

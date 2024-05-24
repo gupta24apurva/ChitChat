@@ -4,6 +4,7 @@ import Logo from './Logo';
 import { uniqBy } from 'lodash'
 import axios from 'axios'
 import { UserContext } from '../UserContext';
+import { debounce } from 'lodash';
 
 const Chat = ({ myUserId }) => {
     const [ws, setWs] = useState(null);
@@ -14,16 +15,19 @@ const Chat = ({ myUserId }) => {
     const [messages, setMessages] = useState([]);
     const [messagesWithoutDuplicates, setMessagesWithoutDuplicates] = useState([]);
     const [newMessageReceived, setNewMessageReceived] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
+    const [typingUsers, setTypingUsers] = useState([]);
 
+    let typingTimeout;
 
     const { username, setUsername, setUserId } = useContext(UserContext)
 
     const selectedUserIdRef = useRef(null);
 
-    function selectUser(userId){
+    function selectUser(userId) {
         selectedUserIdRef.current = userId;
         setSelectedUserId(userId);
-        console.log("Selected user Id: ",selectedUserIdRef.current);
+        console.log("Selected user Id: ", selectedUserIdRef.current);
     }
 
     function logout() {
@@ -39,6 +43,33 @@ const Chat = ({ myUserId }) => {
             setUsername(null)
         })
     }
+
+    const handleTyping = () => {
+        // Send typing event if not already typing
+        if (ws && selectedUserId && !isTyping) {
+            ws.send(JSON.stringify({
+                sender: myUserId,
+                recipient: selectedUserId,
+                typing: true
+            }));
+            setIsTyping(true);
+        }
+
+        // Clear previous timeout
+        clearTimeout(typingTimeout);
+
+        // Set a timeout to send a "not typing" event
+        typingTimeout = setTimeout(() => {
+            if (ws && selectedUserId) {
+                ws.send(JSON.stringify({
+                    sender: myUserId,
+                    recipient: selectedUserId,
+                    typing: false
+                }));
+                setIsTyping(false);
+            }
+        }, 2000); // 2 seconds after user stops typing
+    };
 
     const messageContainerRef = useRef(null)
 
@@ -60,16 +91,22 @@ const Chat = ({ myUserId }) => {
 
     function handleIncomingMessage(e) {
         const messageData = JSON.parse(e.data);
-        console.log("Selected user id: ",selectedUserIdRef.current);
+        console.log("Selected user id: ", selectedUserIdRef.current);
 
         if ('online' in messageData) {
             showOnlinePeople(messageData.online);
         }
+        else if ('typing' in messageData) {
+            if (messageData.typing) {
+                setTypingUsers(prev => [...new Set([...prev, messageData.sender])]);
+            } else {
+                setTypingUsers(prev => prev.filter(user => user !== messageData.sender));
+            }
+        }
         else if ('text' in messageData || 'file' in messageData) {
             // console.log("Selected user id: ",selectedUserId);
             // console.log("Message sender: ",messageData.sender);
-            if(messageData.sender == myUserId)
-            {
+            if (messageData.sender == myUserId) {
                 setMessages(prev => ([...prev, { ...messageData }]));
                 setNewMessageReceived(false);
                 scrollToBottom();
@@ -88,6 +125,12 @@ const Chat = ({ myUserId }) => {
         if (e) {
             e.preventDefault();
         }
+        setIsTyping(false);
+        ws.send(JSON.stringify({
+            sender: myUserId,
+            recipient: selectedUserId,
+            typing: false
+        }));
 
         if (!file && !newMessageText.trim()) {
             setNewMessageText('');
@@ -101,16 +144,7 @@ const Chat = ({ myUserId }) => {
             file
         }));
 
-        // if (file) {
-        //     await axios.get('/messages/' + selectedUserId).then(res => {
-        //         console.log("Response: ",res.data);
-        //         // const newMessage = res.data[res.data.length - 1];
-        //         setMessages(res.data);
-        //         console.log("State updated")
-        //     });
-        // } else {
-        //     setMessages(prev => ([...prev, { text: newMessageText, sender: myUserId, recipient: selectedUserId, _id: Date.now(), file: '' }]));
-        // }
+
         setNewMessageText('');
 
     }
@@ -119,7 +153,7 @@ const Chat = ({ myUserId }) => {
         const file = e.target.files[0];
 
         if (!file) return;
-    
+
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = () => {
@@ -146,6 +180,9 @@ const Chat = ({ myUserId }) => {
 
     useEffect(() => {
         connectToWs();
+        return () => {
+            clearTimeout(typingTimeout);
+        };
     }, []);
 
     useEffect(() => {    // display messages
@@ -185,7 +222,7 @@ const Chat = ({ myUserId }) => {
                 <div className='flex-grow'>
                     <Logo />
                     {Object.keys(onlinePeople).map(userId => (
-                        <div key={userId} onClick={()=>{console.log("Clicked user ID:", userId);selectUser(userId)}} className={'border-b border-gray-100 py-2 pl-4 flex items-center gap-2 cursor-pointer ' + (userId == selectedUserId ? 'bg-blue-200' : '')}>
+                        <div key={userId} onClick={() => { console.log("Clicked user ID:", userId); selectUser(userId) }} className={'border-b border-gray-100 py-2 pl-4 flex items-center gap-2 cursor-pointer ' + (userId == selectedUserId ? 'bg-blue-200' : '')}>
                             {userId == selectedUserId && (
                                 <div className='w-1 bg-blue-500 h-12 rounded-r-md'></div>
                             )}
@@ -196,7 +233,7 @@ const Chat = ({ myUserId }) => {
                         </div>
                     ))}
                     {Object.keys(offlinePeople).map(userId => (
-                        <div key={userId} onClick={()=>{console.log("Clicked user ID:", userId);selectUser(userId)}} className={'border-b border-gray-100 py-2 pl-4 flex items-center gap-2 cursor-pointer ' + (userId == selectedUserId ? 'bg-blue-200' : '')}>
+                        <div key={userId} onClick={() => { console.log("Clicked user ID:", userId); selectUser(userId) }} className={'border-b border-gray-100 py-2 pl-4 flex items-center gap-2 cursor-pointer ' + (userId == selectedUserId ? 'bg-blue-200' : '')}>
                             {userId == selectedUserId && (
                                 <div className='w-1 bg-blue-500 h-12 rounded-r-md'></div>
                             )}
@@ -242,6 +279,9 @@ const Chat = ({ myUserId }) => {
                                                     </a>
                                                 </div>
                                             )}
+                                            {typingUsers.includes(selectedUserId) && (
+                                                <div>Typing...</div>
+                                            )}
                                         </div>
                                     </div>
                                 ))}
@@ -254,7 +294,7 @@ const Chat = ({ myUserId }) => {
                     // <div className='w-4/5 mx-auto flex gap-2 justify-between items-center'>
                     <div className='w-full flex'>
                         <form className='w-11/12 justify-center items-center flex gap-2' onSubmit={sendMessage}>
-                            <input value={newMessageText} onChange={e => setNewMessageText(e.target.value)} type="text" placeholder='Message' className='bg-white border p-2 w-4/5 rounded-lg' />
+                            <input value={newMessageText} onChange={e => { setNewMessageText(e.target.value); handleTyping(); }} type="text" placeholder='Message' className='bg-white border p-2 w-4/5 rounded-lg' />
                             <label className='bg-gray-200 p-2 text-gray-500 rounded-sm border border-gray-300 cursor-pointer'>
                                 <input type="file" className='hidden' onChange={sendFile} />
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
