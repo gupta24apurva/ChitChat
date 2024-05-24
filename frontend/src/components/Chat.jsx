@@ -98,7 +98,7 @@ const Chat = ({ myUserId }) => {
         }
         else if ('typing' in messageData) {
             if (messageData.typing) {
-                setTypingUsers(prev => [...new Set([...prev, messageData.sender])]);
+                setTypingUsers(prev => ([...prev, messageData.sender]));
             } else {
                 setTypingUsers(prev => prev.filter(user => user !== messageData.sender));
             }
