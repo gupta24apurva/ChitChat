@@ -97,7 +97,7 @@ const Chat = ({ myUserId }) => {
             showOnlinePeople(messageData.online);
         }
         else if ('typing' in messageData) {
-            console.log("Message received: ",messageData);
+            console.log("Message received: ", messageData);
             if (messageData.typing) {
                 setTypingUsers(prev => ([...prev, messageData.sender]));
             } else {
@@ -280,15 +280,19 @@ const Chat = ({ myUserId }) => {
                                                     </a>
                                                 </div>
                                             )}
-                                            {/* {typingUsers.includes(selectedUserId) && (
-                                                <div>Typing...</div>
-                                            )} */}
-                                            {console.log("Selected UserId: ",selectedUserId)}
-                                            {console.log("Typing users: ",typingUsers)}
                                         </div>
                                     </div>
                                 ))}
                             </div>
+                            {typingUsers.includes(selectedUserId) && (
+                                <div className='flex justify-start'>
+                                    <div className='max-w-lg inline-block p-1 mx-3 my-2 rounded-md text-md break-all bg-white text-black'>
+                                        <div>
+                                            Typing...
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
