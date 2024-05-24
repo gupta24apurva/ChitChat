@@ -278,7 +278,7 @@ const Chat = ({ myUserId }) => {
 
                     {!!selectedUserId && (
                         <div className='relative h-full'>
-                            <div ref={messageContainerRef} className='overflow-y-scroll scroll-smooth scrollbar-hide absolute left-0 right-0 bottom-2'>
+                            <div ref={messageContainerRef} className='overflow-y-scroll scroll-smooth scrollbar-hide absolute top-10 left-0 right-0 bottom-2'>
                                 {messagesWithoutDuplicates.map((message) => (
                                     <div key={message._id} className={message.sender === myUserId ? 'flex justify-end' : 'flex justify-start'}>
                                         <div className={"max-w-lg inline-block p-1 mx-3 my-2 rounded-md text-md break-all " + (message.sender === myUserId ? 'bg-blue-500 text-white' : 'bg-white text-black')}>
