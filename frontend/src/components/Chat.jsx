@@ -262,7 +262,9 @@ const Chat = ({ myUserId }) => {
                         <div>
                             <span>{onlinePeople[selectedUserId] || offlinePeople[selectedUserId]}</span>
 
-                            {onlinePeople[selectedUserId] ? (typingUsers.includes(selectedUserId) ? <span>Typing...</span> : <span className="text-green-500">Online</span>) : <span className="text-red-500">Offline</span>}
+                            {onlinePeople[selectedUserId] ?
+                                (typingUsers.includes(selectedUserId) ?
+                                    <span>Typing...</span> : <span className="text-green-500">Online</span>) : <span className="text-red-500">Offline</span>}
                         </div>
                     </div>
                 )}
