@@ -47,7 +47,7 @@ const Chat = ({ myUserId }) => {
     const handleTyping = () => {
         // Send typing event if not already typing
         console.log("Typing");
-        
+
         if (ws && selectedUserId) {
             ws.send(JSON.stringify({
                 sender: myUserId,
@@ -99,6 +99,7 @@ const Chat = ({ myUserId }) => {
             showOnlinePeople(messageData.online);
         }
         else if ('typing' in messageData) {
+            console.log("Message received: ",messageData);
             if (messageData.typing) {
                 setTypingUsers(prev => ([...prev, messageData.sender]));
             } else {
