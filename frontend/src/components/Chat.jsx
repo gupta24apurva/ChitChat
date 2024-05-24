@@ -258,10 +258,9 @@ const Chat = ({ myUserId }) => {
 
             <div className='bg-blue-100 w-2/3 p-2 flex flex-col'>
                 {!!selectedUserId && (
-                    <div className='fixed top-0 w-full z-10 bg-white border-b border-gray-200 py-2 pl-4 flex items-center justify-between'>
+                    <div className='fixed top-0 w-full z-10 bg-white border-b border-gray-200 py-2 pl-4 flex items-center'>
                         <div>
                             <span>{onlinePeople[selectedUserId] || offlinePeople[selectedUserId]}</span>
-
                             {onlinePeople[selectedUserId] ?
                                 (typingUsers.includes(selectedUserId) ?
                                     <span>Typing...</span> : <span className="text-green-500">Online</span>) : <span className="text-red-500">Offline</span>}
@@ -279,7 +278,7 @@ const Chat = ({ myUserId }) => {
 
                     {!!selectedUserId && (
                         <div className='relative h-full'>
-                            <div ref={messageContainerRef} className='overflow-y-scroll scroll-smooth scrollbar-hide absolute top-0 left-0 right-0 bottom-2'>
+                            <div ref={messageContainerRef} className='overflow-y-scroll scroll-smooth scrollbar-hide absolute left-0 right-0 bottom-2'>
                                 {messagesWithoutDuplicates.map((message) => (
                                     <div key={message._id} className={message.sender === myUserId ? 'flex justify-end' : 'flex justify-start'}>
                                         <div className={"max-w-lg inline-block p-1 mx-3 my-2 rounded-md text-md break-all " + (message.sender === myUserId ? 'bg-blue-500 text-white' : 'bg-white text-black')}>
