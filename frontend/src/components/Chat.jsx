@@ -69,7 +69,7 @@ const Chat = ({ myUserId }) => {
                 }));
                 // setIsTyping(false);
             }
-        }, 4000); // 4 seconds after user stops typing
+        }, 2500); // 4 seconds after user stops typing
     };
 
     const messageContainerRef = useRef(null)
@@ -257,6 +257,15 @@ const Chat = ({ myUserId }) => {
             </div>
 
             <div className='bg-blue-100 w-2/3 p-2 flex flex-col'>
+                {!!selectedUserId && (
+                    <div className='fixed top-0 left-0 right-0 z-10 bg-white border-b border-gray-200 py-2 pl-4 flex items-center justify-between'>
+                        <div>
+                            <span>{onlinePeople[selectedUserId] || offlinePeople[selectedUserId]}</span>
+
+                            {onlinePeople[selectedUserId] ? (typingUsers.includes(selectedUserId) ? <span>Typing...</span> : <span className="text-green-500">Online</span>) : <span className="text-red-500">Offline</span>}
+                        </div>
+                    </div>
+                )}
                 <div className='flex-grow'>
                     {!selectedUserId && (
                         <div className='flex h-full flex-grow items-center justify-center'>
@@ -324,7 +333,7 @@ const Chat = ({ myUserId }) => {
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     )
 }
 
