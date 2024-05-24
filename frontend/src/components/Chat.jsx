@@ -15,7 +15,7 @@ const Chat = ({ myUserId }) => {
     const [messages, setMessages] = useState([]);
     const [messagesWithoutDuplicates, setMessagesWithoutDuplicates] = useState([]);
     const [newMessageReceived, setNewMessageReceived] = useState(false);
-    const [isTyping, setIsTyping] = useState(false);
+    // const [isTyping, setIsTyping] = useState(false);
     const [typingUsers, setTypingUsers] = useState([]);
 
     let typingTimeout;
@@ -46,13 +46,13 @@ const Chat = ({ myUserId }) => {
 
     const handleTyping = () => {
         // Send typing event if not already typing
-        if (ws && selectedUserId && !isTyping) {
+        if (ws && selectedUserId) {
             ws.send(JSON.stringify({
                 sender: myUserId,
                 recipient: selectedUserId,
                 typing: true
             }));
-            setIsTyping(true);
+            // setIsTyping(true);
         }
 
         // Clear previous timeout
@@ -66,7 +66,7 @@ const Chat = ({ myUserId }) => {
                     recipient: selectedUserId,
                     typing: false
                 }));
-                setIsTyping(false);
+                // setIsTyping(false);
             }
         }, 2000); // 2 seconds after user stops typing
     };
@@ -125,7 +125,7 @@ const Chat = ({ myUserId }) => {
         if (e) {
             e.preventDefault();
         }
-        setIsTyping(false);
+        // setIsTyping(false);
         ws.send(JSON.stringify({
             sender: myUserId,
             recipient: selectedUserId,
