@@ -69,9 +69,9 @@ app.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const createUser = await User.create({ username, password: hashedPassword });
 
-        const token = jwt.sign({ username, userId: createUser._id }, jwtkey);
+        const token = jwt.sign({ username, userId: createUser._id }, jwtkey, {expiresIn: '30d'});
 
-        res.cookie('token', token, { sameSite: 'None', secure: 'true', httpOnly: true }).status(201).json({ token, username, userId: createUser._id })
+        res.cookie('token', token, { sameSite: 'None', secure: 'true', httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }).status(201).json({ token, username, userId: createUser._id })
     }
     catch (err) {
         console.log(err);
@@ -87,8 +87,8 @@ app.post('/login', async (req, res) => {
         const user = await User.findOne({ username });
         if (user) {
             if (await bcrypt.compare(password, user.password)) {
-                const token = jwt.sign({ userId: user._id, username }, jwtkey);
-                return res.cookie('token', token, { sameSite: 'None', secure: 'true', httpOnly: true }).status(201).json({ token, username, userId: user._id })
+                const token = jwt.sign({ userId: user._id, username }, jwtkey, {expiresIn: '30d'});
+                return res.cookie('token', token, { sameSite: 'None', secure: 'true', httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }).status(201).json({ token, username, userId: user._id })
             }
             else{
                 res.status(401).json({message: "Incorrect password"});
@@ -102,7 +102,7 @@ app.post('/login', async (req, res) => {
 })
 
 app.post('/logout', async (req, res) => {
-    res.clearCookie('token', { sameSite: 'none', secure: 'true' }).json('logged out');
+    res.clearCookie('token').json('logged out');
 })
 
 app.get('/people', async (req, res) => {

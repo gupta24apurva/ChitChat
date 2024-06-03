@@ -9,30 +9,25 @@ export function UserContextProvider({ children }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-    
-        if (token) {
-            axios.get('/profile', { headers: { 'Authorization': `Bearer ${token}` }})
-                .then((res) => {
-                    console.log("Logged in!")
-                    console.log("Profile: ", res.data);
-                    setUserId(res.data.userId);
-                    setUsername(res.data.username);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    setLoading(false);
-                })
-        }
-        else{
-            setLoading(false);
-        }
+        // const token = localStorage.getItem('token');
+
+        axios.get('/profile')
+            .then((res) => {
+                console.log("Logged in!")
+                // console.log("Profile: ", res.data);
+                setUserId(res.data.userId);
+                setUsername(res.data.username);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.log(err);
+                setLoading(false);
+            })
     }, [])
 
     return (
         <UserContext.Provider value={{ username, setUsername, userId, setUserId }}>
-            {loading?<div>Loading...</div>:children}
+            {loading ? <div>Loading...</div> : children}
         </UserContext.Provider>
     )
 }
