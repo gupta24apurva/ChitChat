@@ -17,26 +17,19 @@ jwtkey = process.env.JWT_SECRET;
 const port= process.env.PORT || 8000;
 
 const app = express();
-app.use('/uploads',express.static(__dirname+'/uploads'));
-app.use(express.json());
-app.use(cookieParser());
-const corsOptions = {
+app.use(cors({
     origin: process.env.FRONTEND_URL,
     credentials: true
-};
-app.use(cors(corsOptions));
+}));
+app.use(express.json());
+app.use(cookieParser());
+app.use('/uploads',express.static(__dirname+'/uploads'));
 
 const verifyToken = (req, res, next) => {
-    let token = req.cookies?.token;
-
-    if (!token) {
-        const authHeader = req.headers['Authorization'];
-        if (authHeader) {
-            token = authHeader.split(' ')[1];
-        }
-    }
-
-    if (token) {
+    let token;
+    
+    if (req.cookies?.token) {
+        token=req.cookies.token;
         jwt.verify(token, jwtkey, (err, userData) => {
             if (err) {
                 console.log('Token verification failed: ', err);
@@ -71,7 +64,7 @@ app.post('/register', async (req, res) => {
 
         const token = jwt.sign({ username, userId: createUser._id }, jwtkey, {expiresIn: '30d'});
 
-        res.cookie('token', token, { sameSite: 'None', secure: 'true', httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }).status(201).json({ token, username, userId: createUser._id })
+        res.cookie('token', token, { sameSite: 'None', secure: true, httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }).status(201).json({ token, username, userId: createUser._id })
     }
     catch (err) {
         console.log(err);
@@ -88,7 +81,7 @@ app.post('/login', async (req, res) => {
         if (user) {
             if (await bcrypt.compare(password, user.password)) {
                 const token = jwt.sign({ userId: user._id, username }, jwtkey, {expiresIn: '30d'});
-                return res.cookie('token', token, { sameSite: 'None', secure: 'true', httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }).status(201).json({ token, username, userId: user._id })
+                return res.cookie('token', token, { sameSite: 'None', secure: true, httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 }).status(201).json({ token, username, userId: user._id })
             }
             else{
                 res.status(401).json({message: "Incorrect password"});
