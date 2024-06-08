@@ -95,7 +95,7 @@ app.post('/login', async (req, res) => {
 })
 
 app.post('/logout', async (req, res) => {
-    res.clearCookie('token').json('logged out');
+    res.clearCookie('token',{ sameSite: 'None', secure: true, httpOnly: true}).json('logged out');
 })
 
 app.get('/people', async (req, res) => {
