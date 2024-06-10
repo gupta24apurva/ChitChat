@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const ws = require('ws');
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcryptjs");
+const moment = require("moment-timezone");
 const fs=require('fs');
 const cors = require('cors')
 require('dotenv').config();
@@ -179,6 +180,7 @@ wss.on('connection', (connection, req) => {
     connection.on('message', async (message) => {
         const messageData = JSON.parse(message.toString());
         const { sender, recipient, text, file, typing } = messageData;
+        const currentDate = moment().tz('Asia/Kolkata').toDate();
         
         if (typing !== undefined) {
             [...wss.clients]
@@ -204,11 +206,12 @@ wss.on('connection', (connection, req) => {
                 sender,
                 recipient,
                 text,
-                file: file ? filename:null
+                file: file ? filename:null,
+                currentDate
             });
             [...wss.clients]
                 .filter(c => c.userId == recipient || c.userId == sender)
-                .forEach(c => c.send(JSON.stringify({ text, file: file ? filename : null, sender: connection.userId, recipient, _id: messageDoc._id })))
+                .forEach(c => c.send(JSON.stringify({ text, file: file ? filename : null, sender: connection.userId, recipient, currentDate, _id: messageDoc._id })))
         }
     });
 

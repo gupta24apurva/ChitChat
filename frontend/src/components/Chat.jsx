@@ -4,6 +4,7 @@ import Logo from './Logo';
 import { uniqBy } from 'lodash'
 import axios from 'axios'
 import { UserContext } from '../UserContext';
+const moment = require("moment-timezone");
 import { debounce } from 'lodash';
 
 const Chat = ({ myUserId }) => {
@@ -283,19 +284,26 @@ const Chat = ({ myUserId }) => {
                     {!!selectedUserId && (
                         <div className='relative h-full'>
                             <div ref={messageContainerRef} className='overflow-y-scroll scroll-smooth scrollbar-hide absolute top-10 left-0 right-0 bottom-2'>
-                                {messagesWithoutDuplicates.map((message) => (
-                                    <div key={message._id} className={message.sender === myUserId ? 'flex justify-end' : 'flex justify-start'}>
-                                        <div className={"max-w-lg inline-block p-1 mx-3 my-2 rounded-md text-md break-all " + (message.sender === myUserId ? 'bg-blue-500 text-white' : 'bg-white text-black')}>
-                                            {message.text}
-                                            {message.file && (
-                                                <div>
-                                                    <a target="_blank" className='underline' href={axios.defaults.baseURL + '/uploads/' + message.file}>
-                                                        {message.file}
-                                                    </a>
-                                                </div>
-                                            )}
+                                {messagesWithoutDuplicates.map((message, index) => (
+                                    <React.Fragment key={message._id}>
+                                        {index === 0 || moment(message.currentDate).format('YYYY-MM-DD') !== moment(messagesWithoutDuplicates[index - 1].currentDate).format('YYYY-MM-DD') && (
+                                            <div className="text-center mb-2">
+                                                {moment(message.currentDate).format('YYYY-MM-DD')}
+                                            </div>
+                                        )}
+                                        <div className={message.sender === myUserId ? 'flex justify-end' : 'flex justify-start'}>
+                                            <div className={"max-w-lg inline-block p-1 mx-3 my-2 rounded-md text-md break-all " + (message.sender === myUserId ? 'bg-blue-500 text-white' : 'bg-white text-black')}>
+                                                {message.text}
+                                                {message.file && (
+                                                    <div>
+                                                        <a target="_blank" className='underline' href={axios.defaults.baseURL + '/uploads/' + message.file}>
+                                                            {message.file}
+                                                        </a>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
+                                    </React.Fragment>
                                 ))}
                             </div>
                         </div>

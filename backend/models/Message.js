@@ -4,6 +4,7 @@ const MessageSchema=new mongoose.Schema({
     recipient:{type: mongoose.Schema.Types.ObjectId, ref:'User'},
     text: String,
     file: String,
+    date: { type: Date, required: true }
 },{timestamps:true});
 
 const MessageModel=mongoose.model('Message',MessageSchema);
