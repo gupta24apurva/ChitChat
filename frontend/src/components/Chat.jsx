@@ -286,7 +286,12 @@ const Chat = ({ myUserId }) => {
                             <div ref={messageContainerRef} className='overflow-y-scroll scroll-smooth scrollbar-hide absolute top-10 left-0 right-0 bottom-2'>
                                 {messagesWithoutDuplicates.map((message, index) => (
                                     <React.Fragment key={message._id}>
-                                        {index === 0 || moment(message.date).format('YYYY-MM-DD') !== moment(messagesWithoutDuplicates[index - 1].date).format('YYYY-MM-DD') && (
+                                        {index === 0 && (
+                                            <div className="text-center mb-2">
+                                                {moment(message.date).format('YYYY-MM-DD')}
+                                            </div>
+                                        )}
+                                        {index !== 0 && moment(message.date).format('YYYY-MM-DD') !== moment(messagesWithoutDuplicates[index - 1].date).format('YYYY-MM-DD') && (
                                             <div className="text-center mb-2">
                                                 {moment(message.date).format('YYYY-MM-DD')}
                                             </div>
