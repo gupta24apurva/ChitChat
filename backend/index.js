@@ -207,11 +207,11 @@ wss.on('connection', (connection, req) => {
                 recipient,
                 text,
                 file: file ? filename:null,
-                currentDate
+                date: currentDate
             });
             [...wss.clients]
                 .filter(c => c.userId == recipient || c.userId == sender)
-                .forEach(c => c.send(JSON.stringify({ text, file: file ? filename : null, sender: connection.userId, recipient, currentDate, _id: messageDoc._id })))
+                .forEach(c => c.send(JSON.stringify({ text, file: file ? filename : null, sender: connection.userId, recipient, date, _id: messageDoc._id })))
         }
     });
 
