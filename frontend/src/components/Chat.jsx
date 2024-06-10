@@ -284,35 +284,51 @@ const Chat = ({ myUserId }) => {
                     {!!selectedUserId && (
                         <div className='relative h-full'>
                             <div ref={messageContainerRef} className='overflow-y-scroll scroll-smooth scrollbar-hide absolute top-10 left-0 right-0 bottom-2'>
-                                {messagesWithoutDuplicates.map((message, index) => (
-                                    <React.Fragment key={message._id}>
-                                        {index === 0 && (
-                                            <div className="text-center mb-2">
-                                                {moment(message.date).format('YYYY-MM-DD')}
+                                {messagesWithoutDuplicates.map((message, index) => {
+                                    const messageDate = moment(message.date);
+                                    const currentDate = moment().startOf('day');
+                                    const yesterdayDate = moment().subtract(1, 'days').startOf('day');
+
+                                    // Check if the message date is today or yesterday
+                                    let displayDate;
+                                    if (messageDate.isSame(currentDate, 'day')) {
+                                        displayDate = 'Today';
+                                    } else if (messageDate.isSame(yesterdayDate, 'day')) {
+                                        displayDate = 'Yesterday';
+                                    } else {
+                                        displayDate = messageDate.format('YYYY-MM-DD');
+                                    }
+
+                                    // Check if index is 0 or date is different from the previous message
+                                    const isFirstMessage = index === 0;
+                                    const isDifferentDate = !isFirstMessage && displayDate !== moment(messagesWithoutDuplicates[index - 1].date).format('YYYY-MM-DD');
+
+                                    return (
+                                        <React.Fragment key={message._id}>
+                                            {(isFirstMessage || isDifferentDate) && (
+                                                <div className="text-center mb-2">
+                                                    {displayDate}
+                                                </div>
+                                            )}
+                                            <div className={message.sender === myUserId ? 'flex justify-end' : 'flex justify-start'}>
+                                                <div className={"max-w-lg inline-block p-1 mx-3 my-2 rounded-md text-md break-all " + (message.sender === myUserId ? 'bg-blue-500 text-white' : 'bg-white text-black')}>
+                                                    {message.text}
+                                                    {message.file && (
+                                                        <div>
+                                                            <a target="_blank" className='underline' href={axios.defaults.baseURL + '/uploads/' + message.file}>
+                                                                {message.file}
+                                                            </a>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
-                                        )}
-                                        {index !== 0 && moment(message.date).format('YYYY-MM-DD') !== moment(messagesWithoutDuplicates[index - 1].date).format('YYYY-MM-DD') && (
-                                            <div className="text-center mb-2">
-                                                {moment(message.date).format('YYYY-MM-DD')}
-                                            </div>
-                                        )}
-                                        <div className={message.sender === myUserId ? 'flex justify-end' : 'flex justify-start'}>
-                                            <div className={"max-w-lg inline-block p-1 mx-3 my-2 rounded-md text-md break-all " + (message.sender === myUserId ? 'bg-blue-500 text-white' : 'bg-white text-black')}>
-                                                {message.text}
-                                                {message.file && (
-                                                    <div>
-                                                        <a target="_blank" className='underline' href={axios.defaults.baseURL + '/uploads/' + message.file}>
-                                                            {message.file}
-                                                        </a>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </React.Fragment>
-                                ))}
+                                        </React.Fragment>
+                                    );
+                                })}
                             </div>
                         </div>
                     )}
+
                 </div>
 
                 {!!selectedUserId && (
