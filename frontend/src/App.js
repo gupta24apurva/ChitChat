@@ -2,10 +2,11 @@ import React from "react";
 import axios from "axios";
 import Routes from "./Routes";
 import { UserContextProvider } from "./UserContext";
+require("dotenv").config();
 
 function App() {
 
-  axios.defaults.baseURL='https://chitchat-ei78.onrender.com';
+  axios.defaults.baseURL=process.env.BACKEND_URL;
   axios.defaults.withCredentials=true;
 
   return (
