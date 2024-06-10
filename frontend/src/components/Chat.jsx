@@ -224,8 +224,7 @@ const Chat = ({ myUserId }) => {
                 <div className='flex-grow'>
                     <Logo />
                     {Object.keys(onlinePeople).map(userId => (
-                        <div key={userId} onClick={() => { console.log("Clicked user ID:", userId); 
-                        (userId) }} className={'border-b border-gray-100 py-2 pl-4 flex items-center gap-2 cursor-pointer ' + (userId == selectedUserId ? 'bg-blue-200' : '')}>
+                        <div key={userId} onClick={() => { console.log("Clicked user ID:", userId); selectUser(userId) }} className={'border-b border-gray-100 py-2 pl-4 flex items-center gap-2 cursor-pointer ' + (userId == selectedUserId ? 'bg-blue-200' : '')}>
                             {userId == selectedUserId && (
                                 <div className='w-1 bg-blue-500 h-12 rounded-r-md'></div>
                             )}
