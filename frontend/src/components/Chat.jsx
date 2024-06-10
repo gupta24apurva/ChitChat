@@ -4,7 +4,7 @@ import Logo from './Logo';
 import { uniqBy } from 'lodash'
 import axios from 'axios'
 import { UserContext } from '../UserContext';
-const moment = require("moment-timezone");
+import moment from "moment-timezone";
 import { debounce } from 'lodash';
 
 const Chat = ({ myUserId }) => {
