@@ -301,7 +301,7 @@ const Chat = ({ myUserId }) => {
 
                                     // Check if index is 0 or date is different from the previous message
                                     const isFirstMessage = index === 0;
-                                    const isDifferentDate = !isFirstMessage && messageData.format('YYYY-MM-DD') !== moment(messagesWithoutDuplicates[index - 1].date).format('YYYY-MM-DD');
+                                    const isDifferentDate = !isFirstMessage && messageDate.format('YYYY-MM-DD') !== moment(messagesWithoutDuplicates[index - 1].date).format('YYYY-MM-DD');
 
                                     return (
                                         <React.Fragment key={message._id}>
